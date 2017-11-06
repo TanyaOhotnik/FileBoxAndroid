@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">FileBox</string>
+    <string name="action_settings">Settings</string>
+    <!--Navigation drawer-->
+    <string name="nav_account">Account</string>
+    <string name="nav_upload_file">Upload file</string>
+    <string name="nav_share_file">Share file</string>
+    <string name="nav_list_of_files">List of files</string>
+    <string name="nav_download_file_by_link">Download file by link</string>
+    <string name="nav_technical_support">Technical support</string>
+    <!--toggle-->
+    <string name="close">Close</string>
+    <string name="open">Open</string>
+    <!--download file via link-->
+    <string name="enter_file_link">Enter here file link, received in email </string>
+    <string name="download_file">Download file</string>
+    <string name="download_file_title">Download file</string>
+    <!--file details-->
+    <string name="file_name">Name:</string>
+    <string name="file_size">Size:</string>
+    <string name="file_expiration_time">Expiration time:</string>
+    <string name="file_permission">Permission:</string>
+    <!--download file-->
+    <string name="upload_file">Upload</string>
+    <string name="select_file">Select file</string>
+    <string name="default_file_name">No file selected</string>
+</resources>

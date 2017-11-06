@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_file">
+        <item
+            android:id="@+id/nav_upload_file"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/nav_upload_file" />
+        <item
+            android:id="@+id/nav_share_file"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/nav_share_file" />
+        <item
+            android:id="@+id/nav_list_of_files"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/nav_list_of_files" />
+        <item
+            android:id="@+id/nav_download_file_by_link"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/nav_download_file_by_link" />
+
+    </group>
+    <item
+        android:id="@+id/nav_account"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/nav_account" />
+
+    <item
+        android:id="@+id/nav_technical_support"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/nav_technical_support" />
+
+</menu>
