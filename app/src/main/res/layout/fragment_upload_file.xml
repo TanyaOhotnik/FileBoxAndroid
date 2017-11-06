@@ -11,7 +11,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/file_name_upload"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
@@ -19,16 +19,15 @@
             android:text="@string/default_file_name" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/select_file_upload_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="@string/select_file"
-            android:textAllCaps="false" />
+            android:text="@string/select_file"/>
     </LinearLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/upload_file_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

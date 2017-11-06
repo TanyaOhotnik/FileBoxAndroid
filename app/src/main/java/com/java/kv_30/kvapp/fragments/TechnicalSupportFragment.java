@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.java.kv_30.kvapp.R;
@@ -36,7 +37,10 @@ public class TechnicalSupportFragment extends Fragment {
         Log.d(TAG,"loaded");
         View view = inflater.inflate(LAYOUT,container,false);
 
-
+        LinearLayout layout = (LinearLayout)view.findViewById(R.id.linear_layout);
+        TextView t = new TextView(getActivity());
+        t.setText(TAG);
+        layout.addView(t);
 
         return view;
     }
