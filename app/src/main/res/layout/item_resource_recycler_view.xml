@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:id="@+id/file_list_item"
+    android:paddingBottom="2dp"
     style="?android:listSeparatorTextViewStyle"
     >
 
@@ -16,7 +17,7 @@
         android:layout_weight="0.7"
         android:gravity="center_vertical"
         android:text="TextView"
-        android:textSize="16sp" />
+        android:textSize="18sp" />
 
 
     <ImageButton
@@ -25,7 +26,7 @@
         android:layout_height="@dimen/list_element_height"
         android:layout_weight="0.1"
         android:background="@color/colorBackground"
-        app:srcCompat="@mipmap/delete_file" />
+        app:srcCompat="@mipmap/delete_file"/>
 
     <ImageButton
         android:id="@+id/download_file_button_recycler_view"

@@ -87,22 +87,24 @@ public class ListOfFilesFragment extends Fragment{
             return mResourcesList.size();
         }
     }
-    private class ResourceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class ResourceViewHolder extends RecyclerView.ViewHolder {
         Resource mResource;
         TextView fileNameTextView;
         ImageButton deleteButton;
         ImageButton downloadButton;
+        ImageButton detailsButton;
         public ResourceViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
             fileNameTextView = (TextView)itemView.findViewById(R.id.file_name_recycler_view);
             deleteButton = (ImageButton)itemView.findViewById(R.id.delete_file_button_recycler_view);
             downloadButton = (ImageButton)itemView.findViewById(R.id.download_file_button_recycler_view);
+            detailsButton = (ImageButton)itemView.findViewById(R.id.file_details_button_recycler_view);
+            setOnButtonClickListener();
         }
         public void bindResource(Resource resource) {
             mResource = resource;
             fileNameTextView.setText(mResource.getName());
-            setOnButtonClickListener();
+
         }
 
         private void setOnButtonClickListener() {
@@ -118,16 +120,16 @@ public class ListOfFilesFragment extends Fragment{
 
                 }
             });
+            detailsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), FileDetailsActivity.class);
+                    intent.putExtra(Constants.EXTRA_FILE_ID,mResource.getId());
+                    startActivity(intent);
+                }
+            });
         }
 
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), FileDetailsActivity.class);
-            intent.putExtra(Constants.EXTRA_FILE_ID,mResource.getId());
-//                    FileDetailsFragment.getIntent(getActivity(), mCashTransaction.getTransactionId());
-            startActivity(intent);
-//            Fragment fragment = FileDetailsFragment.getInstance(mResource.getId());
-//            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-        }
+
     }
 }

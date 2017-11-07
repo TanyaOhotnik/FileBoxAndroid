@@ -23,7 +23,7 @@ public class ResourceDAO implements InterfaceDAO<Resource> {
 
     private List<Resource> getMockList() {
         List<Resource> list = new ArrayList<>();
-        for(int i=0;i<10;i++){
+        for(int i=0;i<20;i++){
             Resource resource = new Resource();
             resource.setName("file"+i);
             resource.setSize(i*100);
