@@ -2,6 +2,7 @@ package com.java.kv_30.kvapp.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,12 +19,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.java.kv_30.kvapp.BytesCipher;
 import com.java.kv_30.kvapp.R;
 import com.java.kv_30.kvapp.activity.Constants;
+import com.java.kv_30.kvapp.dao.ResourceDAO;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,7 +33,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by TanyaOhotnik on 04.11.2017.
@@ -84,6 +91,9 @@ public class UploadFileFragment extends Fragment {
             Uri uri = data.getData();
             Log.d(TAG, "File Uri: " + uri.toString());
             setFileNameInTextView(uri);
+//            DownloadManager.Request request = new DownloadManager.Request(uri);
+//            request.setDestinationInExternalFilesDir(getActivity(),
+//                    Environment.DIRECTORY_DOWNLOADS,"cats.txt");
 
             InputStream inputStream = null;
             FileOutputStream outputStream = null;
@@ -99,21 +109,23 @@ public class UploadFileFragment extends Fragment {
                     result.write(buffer, 0, length);
                 }
                 fileBytes = result.toByteArray();
-
-
+//                new ResourceDAO().getKeyForResource();
+                fileBytes =  BytesCipher.encryptBytesWithAES(fileBytes,"mysupersecretkey");
 
                 File dir = new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_DOWNLOADS), "myFiles");
                 if(!dir.mkdirs())
                     Log.d(TAG,"can't make dir");
-                File file = new File(dir,"cats.txt");
-                outputStream = new FileOutputStream(file);
+
+//                File file = new File(dir,"cats.txt");
+//                outputStream = new FileOutputStream(file);
+
 //                FileOutputStream outputStream = new FileOutputStream(new File(getActivity().getExternalFilesDir( Environment.DIRECTORY_PICTURES),"cats.jpg"));
 //                while ((read = (byte) inputStream.read()) != -1) {
 //                    outputStream.write(read);
 //                    Log.d(TAG, "writebytes");
 //                }
-                outputStream.write(23);
+//                outputStream.write(23);
                 //check getTotalSpace
             } catch (FileNotFoundException ex) {
                 Toast.makeText(getActivity(), "Can`t find selected file", Toast.LENGTH_SHORT).show();
@@ -134,6 +146,20 @@ public class UploadFileFragment extends Fragment {
             }
         }
     }
+
+//    private byte[] encodeBytesWithAES(byte[] fileBytes) {
+
+//        try {
+////            byte[] key = SCrypt.generate (fileBytes, BITCOIN_SEED, 16384, 8, 8, 32);
+//            SecretKeySpec keyspec = new SecretKeySpec(key, "AES");
+//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
+////            Cipher cipher = Cipher.getInstance("AES/CTR", "BC");
+//            cipher.init(Cipher.ENCRYPT_MODE,);
+//        } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e) {
+//           Toast.makeText(getActivity(),"Can`t encrypt your file",Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
+//    }
 
     private void setFileNameInTextView(Uri uri) {
         String result = uri.getPath();
