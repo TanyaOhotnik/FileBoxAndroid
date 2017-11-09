@@ -4,7 +4,9 @@ package com.java.kv_30.kvapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -47,8 +49,23 @@ public class ListOfFilesFragment extends Fragment{
         getActivity().setTitle(TITLE);
 
         initRecyclerView(view);
+        initFloatingActionButton(view);
         return view;
     }
+    private void initFloatingActionButton(View view) {
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Fragment fragment = UploadFileFragment.getInstance();
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                fm.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            }
+        });
+    }
+
 
     private void initRecyclerView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.list_of_files_recycler_view);
@@ -93,12 +110,14 @@ public class ListOfFilesFragment extends Fragment{
         ImageButton deleteButton;
         ImageButton downloadButton;
         ImageButton detailsButton;
+        ImageButton shareButton;
         public ResourceViewHolder(View itemView) {
             super(itemView);
             fileNameTextView = (TextView)itemView.findViewById(R.id.file_name_recycler_view);
             deleteButton = (ImageButton)itemView.findViewById(R.id.delete_file_button_recycler_view);
             downloadButton = (ImageButton)itemView.findViewById(R.id.download_file_button_recycler_view);
             detailsButton = (ImageButton)itemView.findViewById(R.id.file_details_button_recycler_view);
+            shareButton = (ImageButton)itemView.findViewById(R.id.share_file_button_recycler_view);
             setOnButtonClickListener();
         }
         public void bindResource(Resource resource) {
@@ -126,6 +145,14 @@ public class ListOfFilesFragment extends Fragment{
                     Intent intent = new Intent(getActivity(), FileDetailsActivity.class);
                     intent.putExtra(Constants.EXTRA_FILE_ID,mResource.getId());
                     startActivity(intent);
+                }
+            });
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Fragment fragment = ShareFileFragment.getInstance();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    fm.beginTransaction().replace(R.id.fragment_container, fragment).commit();
                 }
             });
         }
