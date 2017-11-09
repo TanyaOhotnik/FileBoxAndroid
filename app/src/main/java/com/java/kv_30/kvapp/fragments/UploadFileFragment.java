@@ -49,6 +49,7 @@ public class UploadFileFragment extends Fragment {
 
     private static final String TAG = "UploadFileFragment";
     private TextView mTextView;
+    private Uri mFileUri;
 
     public static Fragment getInstance() {
         UploadFileFragment fragment = new UploadFileFragment();
@@ -88,78 +89,10 @@ public class UploadFileFragment extends Fragment {
         if (resultCode != Activity.RESULT_OK) return;
 
         if (requestCode == Constants.CODE_FILE_SELECT) {
-            Uri uri = data.getData();
-            Log.d(TAG, "File Uri: " + uri.toString());
-            setFileNameInTextView(uri);
-//            DownloadManager.Request request = new DownloadManager.Request(uri);
-//            request.setDestinationInExternalFilesDir(getActivity(),
-//                    Environment.DIRECTORY_DOWNLOADS,"cats.txt");
-
-            InputStream inputStream = null;
-            FileOutputStream outputStream = null;
-            try {
-                inputStream = getActivity().getContentResolver().openInputStream(uri);
-                int byteAvailable = inputStream.available();
-                byte fileBytes[] = new byte[byteAvailable];
-                int i = 0;
-                ByteArrayOutputStream result = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = inputStream.read(buffer)) != -1) {
-                    result.write(buffer, 0, length);
-                }
-                fileBytes = result.toByteArray();
-//                new ResourceDAO().getKeyForResource();
-                fileBytes =  BytesCipher.encryptBytesWithAES(fileBytes,"mysupersecretkey");
-
-                File dir = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS), "myFiles");
-                if(!dir.mkdirs())
-                    Log.d(TAG,"can't make dir");
-
-//                File file = new File(dir,"cats.txt");
-//                outputStream = new FileOutputStream(file);
-
-//                FileOutputStream outputStream = new FileOutputStream(new File(getActivity().getExternalFilesDir( Environment.DIRECTORY_PICTURES),"cats.jpg"));
-//                while ((read = (byte) inputStream.read()) != -1) {
-//                    outputStream.write(read);
-//                    Log.d(TAG, "writebytes");
-//                }
-//                outputStream.write(23);
-                //check getTotalSpace
-            } catch (FileNotFoundException ex) {
-                Toast.makeText(getActivity(), "Can`t find selected file", Toast.LENGTH_SHORT).show();
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                Toast.makeText(getActivity(), "Can`t read selected file", Toast.LENGTH_SHORT).show();
-
-            } finally {
-                //up api level to use objects
-                try {
-                    if (inputStream != null)
-                        inputStream.close();
-                    if (outputStream != null)
-                        outputStream.close();
-                } catch (Exception e) {
-                    Toast.makeText(getActivity(), "Can`t close file streams", Toast.LENGTH_SHORT).show();
-                }
-            }
+           mFileUri = data.getData();
+            Log.d(TAG, "Selected file Uri: " + mFileUri.toString());
         }
     }
-
-//    private byte[] encodeBytesWithAES(byte[] fileBytes) {
-
-//        try {
-////            byte[] key = SCrypt.generate (fileBytes, BITCOIN_SEED, 16384, 8, 8, 32);
-//            SecretKeySpec keyspec = new SecretKeySpec(key, "AES");
-//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
-////            Cipher cipher = Cipher.getInstance("AES/CTR", "BC");
-//            cipher.init(Cipher.ENCRYPT_MODE,);
-//        } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e) {
-//           Toast.makeText(getActivity(),"Can`t encrypt your file",Toast.LENGTH_SHORT).show();
-//            e.printStackTrace();
-//        }
-//    }
 
     private void setFileNameInTextView(Uri uri) {
         String result = uri.getPath();
@@ -179,26 +112,113 @@ public class UploadFileFragment extends Fragment {
 
     private void initOnButtonClickListener(View view) {
         Button selectFileButton = (Button) view.findViewById(R.id.select_file_upload_button);
+        Button uploadFileButton = (Button) view.findViewById(R.id.upload_file_button);
         selectFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                check read permission
-                if (checkPermission() == PackageManager.PERMISSION_DENIED)
-                    return;
-
-
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                Intent chooser = Intent.createChooser(intent, "Select app to choose file");
-                try {
-                    startActivityForResult(chooser, Constants.CODE_FILE_SELECT);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(getActivity(), "Please install a File Manager.", Toast.LENGTH_SHORT).show();
-                }
+                selectFile();
             }
         });
+        uploadFileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadFile();
+            }
+        });
+
+    }
+
+    private void selectFile() {
+        //                check read permission
+        if (checkPermission() == PackageManager.PERMISSION_DENIED)
+            return;
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent chooser = Intent.createChooser(intent, "Select app to choose file");
+        try {
+            startActivityForResult(chooser, Constants.CODE_FILE_SELECT);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getActivity(), "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void uploadFile() {
+
+
+        setFileNameInTextView(mFileUri);
+//            DownloadManager.Request request = new DownloadManager.Request(uri);
+//            request.setDestinationInExternalFilesDir(getActivity(),
+//                    Environment.DIRECTORY_DOWNLOADS,"cats.txt");
+        byte[] fileBytes = convertFileUriToBytes();
+
+
+        //file loading at sd card
+        FileOutputStream outputStream = null;
+        try {
+
+            File dir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS), "myFiles");
+            if(!dir.mkdirs())
+                Log.d(TAG,"Can't make dir");
+            else
+                Log.d(TAG,"Directory successfully created");
+                File file = new File(dir,"cats.txt");
+                outputStream = new FileOutputStream(file);
+
+//                FileOutputStream outputStream = new FileOutputStream(new File(getActivity().getExternalFilesDir( Environment.DIRECTORY_PICTURES),"cats.jpg"));
+//                while ((read = (byte) inputStream.read()) != -1) {
+//                    outputStream.write(read);
+//                    Log.d(TAG, "writebytes");
+//                }
+                outputStream.write(23);
+//            check getTotalSpace
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Can`t find selected file", Toast.LENGTH_SHORT).show();
+
+        } finally {
+            //up api level to use objects
+            try {
+                if (outputStream != null)
+                    outputStream.close();
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Can`t close file streams", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private byte[] convertFileUriToBytes() {
+        InputStream inputStream = null;
+
+        try {
+            inputStream = getActivity().getContentResolver().openInputStream(mFileUri);
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+            byte[] fileBytes = result.toByteArray();
+//                new ResourceDAO().getKeyForResource();
+            fileBytes =  BytesCipher.encryptBytesWithAES(fileBytes,"mysupersecretkey");
+            return fileBytes;
+        } catch (FileNotFoundException ex) {
+            Toast.makeText(getActivity(), "Can`t find selected file", Toast.LENGTH_SHORT).show();
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            Toast.makeText(getActivity(), "Can`t read selected file", Toast.LENGTH_SHORT).show();
+
+        } finally {
+            //up api level to use objects
+            try {
+                if (inputStream != null)
+                    inputStream.close();
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Can`t close file streams", Toast.LENGTH_SHORT).show();
+            }
+        }
+        return null;
     }
 
     private int checkPermission() {
