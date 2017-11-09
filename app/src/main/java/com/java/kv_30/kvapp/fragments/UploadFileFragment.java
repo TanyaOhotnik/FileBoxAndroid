@@ -89,7 +89,8 @@ public class UploadFileFragment extends Fragment {
         if (resultCode != Activity.RESULT_OK) return;
 
         if (requestCode == Constants.CODE_FILE_SELECT) {
-           mFileUri = data.getData();
+            mFileUri = data.getData();
+            setFileNameInTextView(mFileUri);
             Log.d(TAG, "Selected file Uri: " + mFileUri.toString());
         }
     }
@@ -106,7 +107,7 @@ public class UploadFileFragment extends Fragment {
                 cursor.close();
             }
         }
-            mTextView.setText(result);
+        mTextView.setText(result);
 
     }
 
@@ -133,7 +134,8 @@ public class UploadFileFragment extends Fragment {
         if (checkPermission() == PackageManager.PERMISSION_DENIED)
             return;
 
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         Intent chooser = Intent.createChooser(intent, "Select app to choose file");
@@ -147,32 +149,31 @@ public class UploadFileFragment extends Fragment {
     private void uploadFile() {
 
 
-        setFileNameInTextView(mFileUri);
 //            DownloadManager.Request request = new DownloadManager.Request(uri);
 //            request.setDestinationInExternalFilesDir(getActivity(),
 //                    Environment.DIRECTORY_DOWNLOADS,"cats.txt");
         byte[] fileBytes = convertFileUriToBytes();
 
-
+        fileBytes = BytesCipher.decryptBytesWithAES(fileBytes,"mysupersecretkey");
         //file loading at sd card
         FileOutputStream outputStream = null;
         try {
 
             File dir = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS), "myFiles");
-            if(!dir.mkdirs())
-                Log.d(TAG,"Can't make dir");
+            if (!dir.mkdirs())
+                Log.d(TAG, "Can't make dir");
             else
-                Log.d(TAG,"Directory successfully created");
-                File file = new File(dir,"cats.txt");
-                outputStream = new FileOutputStream(file);
+                Log.d(TAG, "Directory successfully created");
+            File file = new File(dir, "cats.jpg");
+            outputStream = new FileOutputStream(file);
 
 //                FileOutputStream outputStream = new FileOutputStream(new File(getActivity().getExternalFilesDir( Environment.DIRECTORY_PICTURES),"cats.jpg"));
 //                while ((read = (byte) inputStream.read()) != -1) {
-//                    outputStream.write(read);
+                    outputStream.write(fileBytes);
 //                    Log.d(TAG, "writebytes");
 //                }
-                outputStream.write(23);
+//            outputStream.write(23);
 //            check getTotalSpace
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Can`t find selected file", Toast.LENGTH_SHORT).show();
@@ -201,7 +202,7 @@ public class UploadFileFragment extends Fragment {
             }
             byte[] fileBytes = result.toByteArray();
 //                new ResourceDAO().getKeyForResource();
-            fileBytes =  BytesCipher.encryptBytesWithAES(fileBytes,"mysupersecretkey");
+            fileBytes = BytesCipher.encryptBytesWithAES(fileBytes, "mysupersecretkey");
             return fileBytes;
         } catch (FileNotFoundException ex) {
             Toast.makeText(getActivity(), "Can`t find selected file", Toast.LENGTH_SHORT).show();

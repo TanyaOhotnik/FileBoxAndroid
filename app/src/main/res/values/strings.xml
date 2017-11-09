@@ -20,10 +20,17 @@
     <string name="file_size">Size:</string>
     <string name="file_expiration_time">Expiration time:</string>
     <string name="file_permission">Permission:</string>
-    <!--download file-->
+    <!--upload file-->
     <string name="upload_file">Upload</string>
     <string name="select_file">Select file</string>
     <string name="default_file_name">No file selected</string>
+    <string name="upload_file_hint">Select file from your device, which you want to upload:</string>
     <!--list of files-->
     <string name="listOfFiles">Your files:</string>
+   <!--share file-->
+    <string name="file_to_share_hint">File to share:</string>
+    <string name="share_file">Share</string>
+    <string name="select_permission">Select permission:</string>
+    <string name="permission_all">All users</string>
+    <string name="permission_list_of_users">List of users</string>
 </resources>
